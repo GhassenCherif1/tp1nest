@@ -28,10 +28,11 @@ export class CvController {
   @Post()
   @UseGuards(JwtAuthGuard)
   create(
-    @Body() createCvDto: CreateCvDto,
+    @Body("cv") createCvDto: CreateCvDto,
+    @Body("skills") skills: number[],
     @User() user
   ) {
-    return this.cvService.create(createCvDto,user);
+    return this.cvService.create(createCvDto,user,skills);
   }
 
 

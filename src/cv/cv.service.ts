@@ -6,20 +6,31 @@ import { Cv } from './entities/cv.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { UserRoleEnum } from 'src/enums/user-role.enum';
+import { Skill } from 'src/skill/entities/skill.entity';
 
 @Injectable()
 export class CvService {
   constructor(
     @InjectRepository(Cv)
     private cvRepository : Repository<Cv>,
+    @InjectRepository(Skill)
+    private skillRepository : Repository<Skill>,
     private authservice: AuthService
   ){
 
   }
-  async create(createCvDto: CreateCvDto, user): Promise<Cv> {
-    const cv = this.cvRepository.create(createCvDto);
-    cv.user = user
-    return await this.cvRepository.save(cv) ; 
+  async create(newCv: CreateCvDto, user, skillIds: number[]): Promise<Cv> {
+    const cv = this.cvRepository.create(newCv);
+    cv.user = user;
+    const skills = [];
+    if (Array.isArray(skillIds)) {
+      await Promise.all(skillIds.map(async (id) => {
+        const skill = await this.skillRepository.findOneBy({ id: id });
+        skills.push(skill);
+      }));
+    }
+    cv.skills = skills;
+    return await this.cvRepository.save(cv);
   }
 
   async findAll(query,user) {
@@ -76,4 +87,5 @@ export class CvService {
   addCvImage(id:number, filePath:string){
     return this.cvRepository.update(id,{path:filePath})
   }
+  
 }

@@ -30,7 +30,7 @@ export class SkillService {
   async removeById(id: number): Promise<Skill> {
     const found = await this.findById(id);
     if (found) {
-      this.skillrespository.remove(found);
+      this.skillrespository.softDelete(id);
       return found;
     }
   }

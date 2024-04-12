@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Cv } from './entities/cv.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { AuthModule } from 'src/auth/auth.module';
+import { Skill } from 'src/skill/entities/skill.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cv]),MulterModule.register({
+  imports: [TypeOrmModule.forFeature([Cv,Skill]),MulterModule.register({
     dest: './public',
   }) , AuthModule],
   controllers: [CvController],
