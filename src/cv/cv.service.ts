@@ -33,6 +33,16 @@ export class CvService {
     return await this.cvRepository.save(cv);
   }
 
+  async findAllPaginated(paginatoinDto,user){
+    const{page,limit} = paginatoinDto;
+    const qb = this.cvRepository.createQueryBuilder('cv');
+    if (page > 0 && limit > 0) {
+      const skip = (page - 1) * limit; // Calculate skip offset based on page and limit
+      qb.skip(skip).take(limit);
+    }
+    return(qb.getMany())
+  }
+
   async findAll(query,user) {
     const {critere, age} = query;
     const qb = this.cvRepository.createQueryBuilder('cv');

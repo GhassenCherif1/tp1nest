@@ -6,6 +6,7 @@ import { RechercheCvDto } from './dto/recherche-cv.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/auth/decorators/user.decorator';
+import { PaginationDto } from './dto/pagination-cv.dto';
 
 @Controller({
   path:"cv",
@@ -35,6 +36,14 @@ export class CvController {
     return this.cvService.create(createCvDto,user,skills);
   }
 
+  @Get("paginated")
+  @UseGuards(JwtAuthGuard)
+  findAllPaginated(
+    @Query() paginatoinDto: PaginationDto,
+    @User() user
+  ) {
+    return this.cvService.findAllPaginated(paginatoinDto,user);
+  }
 
   @Get()
   @UseGuards(JwtAuthGuard)
