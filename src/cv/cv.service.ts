@@ -4,9 +4,9 @@ import { UpdateCvDto } from './dto/update-cv.dto';
 import { Repository } from 'typeorm';
 import { Cv } from './entities/cv.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthService } from 'src/auth/auth.service';
-import { UserRoleEnum } from 'src/enums/user-role.enum';
-import { Skill } from 'src/skill/entities/skill.entity';
+import { AuthService } from '../auth/auth.service';
+import { UserRoleEnum } from '../enums/user-role.enum';
+import { Skill } from '../skill/entities/skill.entity';
 
 @Injectable()
 export class CvService {

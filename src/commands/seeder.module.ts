@@ -1,19 +1,22 @@
-import {Module} from "@nestjs/common";
-import {CvModule} from "../cv/cv.module";
-import {SkillModule} from "../skill/skill.module";
-import {ConfigModule} from "@nestjs/config";
-import {TypeOrmModule} from "@nestjs/typeorm";
-import * as process from "process";
-import { AuthModule } from "src/auth/auth.module";
+import { Module } from '@nestjs/common';
+import { CvModule } from '../cv/cv.module';
+import { SkillModule } from '../skill/skill.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import * as process from 'process';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [CvModule,AuthModule,SkillModule,
+  imports: [
+    CvModule,
+    AuthModule,
+    SkillModule,
     ConfigModule.forRoot({
       envFilePath: './config/.env',
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mssql',
+      type: 'mysql',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
@@ -21,9 +24,6 @@ import { AuthModule } from "src/auth/auth.module";
       database: process.env.DB_NAME,
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
       synchronize: true,
-      options: {
-        trustServerCertificate: true,
-      }
     }),
     CvModule,
     SkillModule,
@@ -32,4 +32,4 @@ import { AuthModule } from "src/auth/auth.module";
   controllers: [],
   providers: [],
 })
-export class SeederModule{}
+export class SeederModule {}
