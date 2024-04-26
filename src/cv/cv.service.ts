@@ -94,6 +94,7 @@ export class CvService {
     else 
       throw new UnauthorizedException()
   }
+
   addCvImage(id:number, filePath:string){
     return this.cvRepository.update(id,{path:filePath})
   }

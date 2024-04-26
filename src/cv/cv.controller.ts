@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseInterceptors, UploadedFile, UseGuards, NotAcceptableException } from '@nestjs/common';
 import { CvService } from './cv.service';
 import { CreateCvDto } from './dto/create-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
@@ -22,6 +22,9 @@ export class CvController {
     @UploadedFile() file,
     @Param("id",ParseIntPipe) id:number) {
     const filePath = file.path
+    if (file.size >= 1024*1024){
+      throw new NotAcceptableException('File Size should be less than 1MB');
+    }
     console.log(filePath)
     return this.cvService.addCvImage(id,filePath)
   }
