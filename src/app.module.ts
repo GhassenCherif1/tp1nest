@@ -21,7 +21,7 @@ import { SkillModule } from './skill/skill.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: false,
     }),
     AuthModule,
     SkillModule,

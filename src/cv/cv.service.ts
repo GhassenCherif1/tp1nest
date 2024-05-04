@@ -49,7 +49,7 @@ export class CvService {
     console.log(user.id)
     const userId = user.id
     if(user.role == UserRoleEnum.ADMIN)
-      qb.where("")
+      qb.andWhere("")
     else
       qb.where("cv.userId = :userId").setParameters({userId})
     if (critere) {
@@ -57,7 +57,7 @@ export class CvService {
         .setParameters({critere});
     }
     if (age) {
-      qb.orWhere('cv.age = :age').setParameters({age});
+      qb.andWhere('cv.age = :age').setParameters({age});
     }
     console.log(qb.getSql())
     return await qb.getMany()
@@ -95,8 +95,15 @@ export class CvService {
       throw new UnauthorizedException()
   }
 
-  addCvImage(id:number, filePath:string){
-    return this.cvRepository.update(id,{path:filePath})
+  async addCvImage(id:number, filePath:string,user){
+
+    const cv= await this.cvRepository.findOneBy({id})
+    if(!cv)
+      throw new NotFoundException(`Le cv d'id ${id} n'existe pas`);
+    if(this.authservice.isOwnerOrAdmin(cv,user))
+      return this.cvRepository.update(id,{path:filePath})
+    throw new UnauthorizedException()
+    
   }
   
 }

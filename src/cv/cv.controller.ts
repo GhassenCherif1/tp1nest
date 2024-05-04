@@ -20,13 +20,14 @@ export class CvController {
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
     @UploadedFile() file,
-    @Param("id",ParseIntPipe) id:number) {
+    @Param("id",ParseIntPipe) id:number,
+    @User() user) {
     const filePath = file.path
     if (file.size >= 1024*1024){
       throw new NotAcceptableException('File Size should be less than 1MB');
     }
     console.log(filePath)
-    return this.cvService.addCvImage(id,filePath)
+    return this.cvService.addCvImage(id,filePath,user)
   }
 
   @Post()
