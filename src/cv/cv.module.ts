@@ -18,7 +18,8 @@ import { CvupdateModule } from 'src/cvupdate/cvupdate.module';
       dest: './public',
     }),
     AuthModule,
-    CvupdateModule,
+    
+    
   ],
   controllers: [CvController],
   providers: [CvService],

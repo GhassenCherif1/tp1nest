@@ -9,6 +9,7 @@ import { User } from '../auth/decorators/user.decorator';
 import { PaginationDto } from './dto/pagination-cv.dto';
 import { Observable, fromEvent, map } from 'rxjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CvEventDto } from 'src/cvupdate/dto/cvevent.dto';
 
 @Controller({
   path:"cv",
@@ -20,12 +21,15 @@ export class CvController {
   ) {}
 
   @Sse('sse')
+  @UseGuards(JwtAuthGuard)
   sse(@User() user): Observable<MessageEvent> {
-    return fromEvent(this.eventEmitter, 'cv-event').pipe(
-      map((payload: any) => {
-        console.log(payload);
-        if (user.userId === payload.user.id || user.role === 'admin')
-          return new MessageEvent(payload.eventType, { data: payload });
+    console.log('SSE');
+    return fromEvent(this.eventEmitter, 'cvupdate').pipe(
+      map((payload: CvEventDto) => {
+        console.log("payload",payload);
+        if (user.userId === payload.performedBy.id || user.role === 'admin')
+          {console.log("sending event");
+          return new MessageEvent(payload.type, { data: {type:payload.type,user:payload.performedBy.username} });}
       }),
     );
   }

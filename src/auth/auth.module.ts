@@ -7,11 +7,13 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { JwtStrategy } from './jwt.strategy';
+import { Cv } from 'src/cv/entities/cv.entity';
+import { Cvupdate } from 'src/cvupdate/entities/cvupdate.entety';
 
 dotenv.config();
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User,Cv,Cvupdate]),
     PassportModule.register({
       defaultStrategy: 'jwt',
     }),

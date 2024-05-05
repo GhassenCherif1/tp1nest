@@ -1,15 +1,17 @@
 import { Cvupdate } from 'src/cvupdate/entities/cvupdate.entety';
 import { Cv } from '../../cv/entities/cv.entity';
 import { UserRoleEnum } from '../../enums/user-role.enum';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
   @Column({ unique: true })
+
   username: string;
   @Column()
+ 
   password: string;
   @Column({ unique: true })
   email: string;

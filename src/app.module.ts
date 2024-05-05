@@ -25,6 +25,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       database: process.env.DB_NAME,
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
+      autoLoadEntities: true,
     }),
     AuthModule,
     SkillModule,

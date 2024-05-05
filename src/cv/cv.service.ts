@@ -34,6 +34,7 @@ export class CvService {
       }));
     }
     cv.skills = skills;
+  
     this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.CREATE,cv,user));
     return await this.cvRepository.save(cv);
   }

@@ -7,7 +7,7 @@ import { TimeStampEntities } from "src/generics/timestamps.entites";
 
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity('cvupdate')
 export class Cvupdate extends TimeStampEntities{
   @PrimaryGeneratedColumn()
   id: number;

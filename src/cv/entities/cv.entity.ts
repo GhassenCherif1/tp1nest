@@ -36,6 +36,7 @@ export class Cv extends TimeStampEntities {
   @ManyToMany(() => Skill)
   @JoinTable()
   skills: Skill[];
-  @OneToMany(() => Cvupdate, (cvupdate) => cvupdate.cv)
+  @OneToMany(() => Cvupdate, (cvupdate) => cvupdate.cv,
+  {onDelete:'CASCADE'})
   historiques: Cvupdate[];
 }

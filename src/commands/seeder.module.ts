@@ -5,12 +5,15 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as process from 'process';
 import { AuthModule } from '../auth/auth.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CvupdateModule } from '../cvupdate/cvupdate.module';
 
 @Module({
   imports: [
     CvModule,
     AuthModule,
     SkillModule,
+
     ConfigModule.forRoot({
       envFilePath: './config/.env',
       isGlobal: true,
@@ -28,6 +31,8 @@ import { AuthModule } from '../auth/auth.module';
     CvModule,
     SkillModule,
     AuthModule,
+    EventEmitterModule.forRoot(),
+    CvupdateModule
   ],
   controllers: [],
   providers: [],

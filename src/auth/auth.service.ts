@@ -35,7 +35,7 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
-      password: user.password,
+      
     };
   }
   async login(credentials: LoginUserDto) {
