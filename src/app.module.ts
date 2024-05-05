@@ -8,6 +8,9 @@ import { AuthMiddleware } from './cv/middlewares/auth/auth.middleware';
 
 import { AuthModule } from './auth/auth.module';
 import { SkillModule } from './skill/skill.module';
+import { CvupdateModule } from './cvupdate/cvupdate.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+
 
 @Module({
   imports: [
@@ -21,13 +24,16 @@ import { SkillModule } from './skill/skill.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: false,
+      synchronize: true,
     }),
     AuthModule,
     SkillModule,
+    CvupdateModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
+  
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

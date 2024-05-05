@@ -1,3 +1,4 @@
+import { Cvupdate } from 'src/cvupdate/entities/cvupdate.entety';
 import { User } from '../../auth/entities/user.entity';
 import { TimeStampEntities } from '../../generics/timestamps.entites';
 import { Skill } from '../../skill/entities/skill.entity';
@@ -7,6 +8,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 @Entity('cv')
@@ -34,4 +36,6 @@ export class Cv extends TimeStampEntities {
   @ManyToMany(() => Skill)
   @JoinTable()
   skills: Skill[];
+  @OneToMany(() => Cvupdate, (cvupdate) => cvupdate.cv)
+  historiques: Cvupdate[];
 }

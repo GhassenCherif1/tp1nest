@@ -1,3 +1,4 @@
+import { Cvupdate } from 'src/cvupdate/entities/cvupdate.entety';
 import { Cv } from '../../cv/entities/cv.entity';
 import { UserRoleEnum } from '../../enums/user-role.enum';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -24,4 +25,7 @@ export class User {
     nullable: true,
   })
   cvs: Cv[];
+
+  @OneToMany(() => Cvupdate, (cvupdate) => cvupdate.performedBy)
+  historiques: Cvupdate[];
 }

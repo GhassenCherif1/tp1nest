@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '../auth/auth.service';
 import { UserRoleEnum } from '../enums/user-role.enum';
 import { Skill } from '../skill/entities/skill.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CvEventDto } from 'src/cvupdate/dto/cvevent.dto';
+import { CvupdateType } from 'src/enums/cv-events.enum';
 
 @Injectable()
 export class CvService {
@@ -15,7 +18,8 @@ export class CvService {
     private cvRepository : Repository<Cv>,
     @InjectRepository(Skill)
     private skillRepository : Repository<Skill>,
-    private authservice: AuthService
+    private authservice: AuthService,
+    private readonly eventEmitter: EventEmitter2,
   ){
 
   }
@@ -30,6 +34,7 @@ export class CvService {
       }));
     }
     cv.skills = skills;
+    this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.CREATE,cv,user));
     return await this.cvRepository.save(cv);
   }
 
@@ -82,7 +87,8 @@ export class CvService {
       throw new NotFoundException(`Le cv d'id ${id} n'existe pas`);
     const cv1 = await this.cvRepository.findOneBy({id})
     if(this.authservice.isOwnerOrAdmin(cv1,user))
-      return await this.cvRepository.save(cv)
+      {this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.UPDATE,cv,user));
+      return await this.cvRepository.save(cv)}
     else 
       throw new UnauthorizedException()
   }
@@ -90,7 +96,8 @@ export class CvService {
   async remove(id: number,user) {
     const cv = await this.cvRepository.findOneBy({id})
     if(this.authservice.isOwnerOrAdmin(cv,user))
-      return await this.cvRepository.softDelete(id);
+      { this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.DELETE,cv,user));
+        return await this.cvRepository.softDelete(id);}
     else 
       throw new UnauthorizedException()
   }

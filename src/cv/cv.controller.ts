@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseInterceptors, UploadedFile, UseGuards, NotAcceptableException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseInterceptors, UploadedFile, UseGuards, NotAcceptableException, Sse } from '@nestjs/common';
 import { CvService } from './cv.service';
 import { CreateCvDto } from './dto/create-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
@@ -7,13 +7,28 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../auth/decorators/user.decorator';
 import { PaginationDto } from './dto/pagination-cv.dto';
+import { Observable, fromEvent, map } from 'rxjs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Controller({
   path:"cv",
   version: '1'
 })
 export class CvController {
-  constructor(private readonly cvService: CvService) {}
+  constructor(private readonly cvService: CvService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
+
+  @Sse('sse')
+  sse(@User() user): Observable<MessageEvent> {
+    return fromEvent(this.eventEmitter, 'cv-event').pipe(
+      map((payload: any) => {
+        console.log(payload);
+        if (user.userId === payload.user.id || user.role === 'admin')
+          return new MessageEvent(payload.eventType, { data: payload });
+      }),
+    );
+  }
 
   @Post('upload/:id')
   @UseGuards(JwtAuthGuard)
