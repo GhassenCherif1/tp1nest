@@ -27,9 +27,10 @@ export class CvController {
     return fromEvent(this.eventEmitter, 'cvupdate').pipe(
       map((payload: CvEventDto) => {
         console.log("payload",payload);
-        if (user.userId === payload.performedBy.id || user.role === 'admin')
+        console.log("user",user); 
+        if (user.id === payload.performedBy.id || user.role === 'admin')
           {console.log("sending event");
-          return new MessageEvent(payload.type, { data: {type:payload.type,user:payload.performedBy.username} });}
+          return new MessageEvent("update", { data: {type:payload.type,user:payload.performedBy.username} });}
       }),
     );
   }

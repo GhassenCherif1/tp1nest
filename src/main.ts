@@ -18,6 +18,10 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   })
+  //cors
+  app.enableCors({
+    
+  });
   await app.listen(process.env.APP_PORT);
 }
 bootstrap();
