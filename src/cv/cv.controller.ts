@@ -23,11 +23,10 @@ export class CvController {
   @Sse('sse')
   @UseGuards(JwtAuthGuard)
   sse(@User() user): Observable<MessageEvent> {
-    console.log('SSE');
     return fromEvent(this.eventEmitter, 'cvupdate').pipe(
       map((payload: CvEventDto) => {
         console.log("payload",payload);
-        console.log("user",user); 
+         
         if (user.id === payload.performedBy.id || user.role === 'admin')
           {console.log("sending event");
           return new MessageEvent("update", { data: {type:payload.type,user:payload.performedBy.username} });}

@@ -23,7 +23,7 @@ export class CvService {
   ){
 
   }
-  async create(newCv: CreateCvDto, user, skillIds: number[]): Promise<Cv> {
+  async create(newCv: CreateCvDto, user, skillIds: number[]) {
     const cv = this.cvRepository.create(newCv);
     cv.user = user;
     const skills = [];
@@ -34,9 +34,13 @@ export class CvService {
       }));
     }
     cv.skills = skills;
-  
-    this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.CREATE,cv,user));
-    return await this.cvRepository.save(cv);
+    
+    
+    const x=await this.cvRepository.save(cv);
+    this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.CREATE,x,user));
+    console.log("cv created : ", x);
+    
+    return x;
   }
 
   async findAllPaginated(paginatoinDto,user){
@@ -88,8 +92,10 @@ export class CvService {
       throw new NotFoundException(`Le cv d'id ${id} n'existe pas`);
     const cv1 = await this.cvRepository.findOneBy({id})
     if(this.authservice.isOwnerOrAdmin(cv1,user))
-      {this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.UPDATE,cv,user));
-      return await this.cvRepository.save(cv)}
+      {
+       const newcv=await  this.cvRepository.save(cv)
+       this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.UPDATE,newcv,user));
+       return newcv;}
     else 
       throw new UnauthorizedException()
   }
@@ -97,8 +103,9 @@ export class CvService {
   async remove(id: number,user) {
     const cv = await this.cvRepository.findOneBy({id})
     if(this.authservice.isOwnerOrAdmin(cv,user))
-      { this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.DELETE,cv,user));
-        return await this.cvRepository.softDelete(id);}
+      { const newcv=await  this.cvRepository.save(cv)
+        this.eventEmitter.emit('cvupdate',new CvEventDto(CvupdateType.UPDATE,newcv,user));
+        return newcv;}
     else 
       throw new UnauthorizedException()
   }
